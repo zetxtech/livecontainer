@@ -41,8 +41,17 @@ mv ./tmp/SideStoreSupport.framework Payload/LiveContainer.app/Frameworks
 
 # download SideStore
 cd tmp
-wget "${SIDESTORE_IPA_URL:-https://github.com/zetxtech/sidestore/releases/download/nightly/SideStore.ipa}"
-unzip SideStore.ipa
+SIDESTORE_IPA_URL="${SIDESTORE_IPA_URL:-https://github.com/zetxtech/sidestore/releases/download/nightly/SideStore.ipa}"
+echo "Downloading SideStore.ipa from ${SIDESTORE_IPA_URL}"
+if ! wget -q "${SIDESTORE_IPA_URL}" -O SideStore.ipa; then
+  echo "error: failed to download SideStore.ipa from ${SIDESTORE_IPA_URL}" >&2
+  exit 1
+fi
+unzip -q SideStore.ipa
+if [ ! -d Payload/SideStore.app ]; then
+  echo "error: SideStore.app not found in downloaded SideStore.ipa" >&2
+  exit 1
+fi
 cd ..
 
 # SideStore
